@@ -25,6 +25,13 @@ func main() {
 	}
 	svc := NewAppService(st)
 
+	// Without this, opening StudyGuard twice (e.g. double-clicking it again
+	// in Launchpad while it's already running) spins up a second process
+	// with its own independent session state and tray icon - the two then
+	// disagree about whether a session is active. Wails' SingleInstance
+	// option makes the second launch just signal the first one and exit.
+	var window *application.WebviewWindow
+
 	app := application.New(application.Options{
 		Name:        "StudyGuard",
 		Description: "学习专注屏蔽工具",
@@ -38,9 +45,18 @@ func main() {
 			ActivationPolicy: application.ActivationPolicyAccessory,
 			ApplicationShouldTerminateAfterLastWindowClosed: false,
 		},
+		SingleInstance: &application.SingleInstanceOptions{
+			UniqueID: "shop.haigc.study-guard",
+			OnSecondInstanceLaunch: func(data application.SecondInstanceData) {
+				if window != nil {
+					window.Show()
+					window.Focus()
+				}
+			},
+		},
 	})
 
-	window := app.Window.NewWithOptions(application.WebviewWindowOptions{
+	window = app.Window.NewWithOptions(application.WebviewWindowOptions{
 		Title:            "StudyGuard",
 		Width:            340,
 		Height:           520,
