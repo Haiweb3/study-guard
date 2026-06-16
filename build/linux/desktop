@@ -1,0 +1,13 @@
+[Desktop Entry]
+Version=1.0
+Name=StudyGuard
+Comment=学习专注屏蔽工具
+# The Exec line includes %u to pass the URL to the application
+Exec=/usr/local/bin/study-guard %u
+Terminal=false
+Type=Application
+Icon=study-guard
+Categories=Utility;
+StartupWMClass=study-guard
+
+ 

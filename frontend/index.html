@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+    <link rel="stylesheet" href="/style.css"/>
+    <title>StudyGuard</title>
+</head>
+<body>
+<div class="panel">
+    <header class="panel-header">
+        <span class="app-icon" id="appIcon">📚</span>
+        <div class="app-title">
+            <h1>StudyGuard</h1>
+            <p id="subtitle">专注屏蔽工具</p>
+        </div>
+    </header>
+
+    <section class="status-card" id="statusCard"></section>
+
+    <section class="setup" id="setupSection">
+        <div class="field">
+            <label>屏蔽方式</label>
+            <div class="segmented" id="modeSegmented">
+                <button class="seg-btn active" data-mode="kill">强制退出</button>
+                <button class="seg-btn" data-mode="quiet">仅静音</button>
+            </div>
+        </div>
+        <div class="field">
+            <label>时长</label>
+            <div class="duration-row">
+                <button class="seg-btn small active" id="manualBtn" data-duration="0">手动结束</button>
+                <input type="number" id="durationInput" min="1" placeholder="分钟" disabled/>
+                <button class="seg-btn small" id="useTimerBtn">定时</button>
+            </div>
+        </div>
+        <button class="start-btn" id="startBtn">开始学习模式</button>
+    </section>
+
+    <details class="card-section" id="blacklistSection">
+        <summary>黑名单 <span id="blacklistCount"></span></summary>
+        <div class="chip-list" id="chipList"></div>
+        <button class="pick-btn" id="pickRunningBtn">从正在运行的应用里选 ＋</button>
+        <div class="running-list" id="runningList" hidden></div>
+    </details>
+
+    <details class="card-section" id="historySection">
+        <summary>专注记录</summary>
+        <div class="history-list" id="historyList"></div>
+    </details>
+</div>
+<script type="module" src="/src/main.js"></script>
+</body>
+</html>
