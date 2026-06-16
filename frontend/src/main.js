@@ -67,7 +67,8 @@ function renderStatus() {
         els.appIcon.textContent = status.mode === "kill" ? "🔒" : "🔕";
         els.subtitle.textContent = status.mode === "kill" ? "强制退出模式中" : "静音模式中";
         renderActiveCard();
-        countdownTimer = setInterval(renderActiveCard, 1000);
+        updateRing();
+        countdownTimer = setInterval(updateRing, 1000);
     } else {
         els.setupSection.style.display = "";
         els.appIcon.textContent = "📚";
@@ -91,6 +92,28 @@ function formatDuration(ms) {
 }
 
 function renderActiveCard() {
+    els.statusCard.innerHTML = `
+    <div class="ring ${status.mode === "kill" ? "kill" : ""}" id="focusRing" style="--progress:0">
+      <div class="ring-inner">
+        <span class="ring-icon">${status.mode === "kill" ? "🔒" : "🔕"}</span>
+        <span class="ring-time" id="ringTime">00:00</span>
+        <span class="ring-caption" id="ringCaption"></span>
+      </div>
+    </div>
+    <div class="end-zone" id="endZone">
+      <button class="end-btn" id="endBtn">结束学习模式</button>
+    </div>
+  `;
+    document.getElementById("endBtn").addEventListener("click", startEndConfirm);
+}
+
+// Runs every second while a session is active. Only touches the ring's own
+// elements, never #endZone - otherwise it would stomp the anti-laziness
+// confirm countdown before its 5 seconds are up.
+function updateRing() {
+    const ring = document.getElementById("focusRing");
+    if (!ring) return;
+
     const started = new Date(status.startedAt);
     const now = new Date();
     let progress = 100;
@@ -109,19 +132,9 @@ function renderActiveCard() {
         caption = "已专注";
     }
 
-    els.statusCard.innerHTML = `
-    <div class="ring ${status.mode === "kill" ? "kill" : ""}" style="--progress:${progress}">
-      <div class="ring-inner">
-        <span class="ring-icon">${status.mode === "kill" ? "🔒" : "🔕"}</span>
-        <span class="ring-time">${timeLabel}</span>
-        <span class="ring-caption">${caption}</span>
-      </div>
-    </div>
-    <div class="end-zone" id="endZone">
-      <button class="end-btn" id="endBtn">结束学习模式</button>
-    </div>
-  `;
-    document.getElementById("endBtn").addEventListener("click", startEndConfirm);
+    ring.style.setProperty("--progress", progress);
+    document.getElementById("ringTime").textContent = timeLabel;
+    document.getElementById("ringCaption").textContent = caption;
 }
 
 function startEndConfirm() {
